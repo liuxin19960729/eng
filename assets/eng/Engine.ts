@@ -35,6 +35,7 @@ declare global {
 @ccclass
 export default class Engine extends cc.Component {
     protected onLoad(): void {
+        cc.game.addPersistRootNode(this.node);
         const mods = this.node.getComponentsInChildren(Module);
         mods.forEach(mod => {
             app.registerModule(mod.node.name, mod);
@@ -84,6 +85,10 @@ class App {
         Object.values(self.cus).forEach(val => !!val.onAfterInit && val.onAfterInit());
         return Promise.resolve();
     }
+
+
+  
+
     private _totalTime: number = 0;
 
     get totalTime(): number {

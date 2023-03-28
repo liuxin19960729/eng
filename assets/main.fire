@@ -193,7 +193,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "config",
+    "_name": "conf",
     "_objFlags": 0,
     "_parent": {
       "__id__": 3
@@ -263,9 +263,11 @@
     "_enabled": true,
     "isLog": true,
     "type": 1,
-    "config": {
+    "tableConfig": {
       "__uuid__": "1ab25cea-e54c-461e-9ab2-a6d83b95571e"
     },
+    "bundle": "resources",
+    "dirPath": "data/",
     "_id": "45ezt70flHfK87r4RUb6nW"
   },
   {
