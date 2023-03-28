@@ -14,30 +14,38 @@ export default abstract class Entry extends cc.Component {
     loadingPrefebPath: string = "loading"
 
 
-    protected loadingWindow: LoadingWindow = null;
-    protected loadingPrefeb: cc.Prefab = null;
+    private _loadingWindow: LoadingWindow = null;
+    private _loadingPrefeb: cc.Prefab = null;
 
     protected async start() {
         const loadingPrefeb = await this.loadLoding();
         loadingPrefeb.addRef();
-        this.loadingPrefeb = loadingPrefeb;
+        this._loadingPrefeb = loadingPrefeb;
         const loadingNode = cc.instantiate(loadingPrefeb);
         cc.find("Canvas").addChild(loadingNode);
-        this.loadingWindow = loadingNode.getComponent(LoadingWindow);
-        await app.init(this.loading.bind(this));
-        app.debug(`游戏开始`)
-        this.startGame();
+        this._loadingWindow = loadingNode.getComponent(LoadingWindow);
+        this._loadingWindow.node.once("startGame", this.__startGame, this);
+        await app.init(this._loadingWindow.progress.bind(this._loadingWindow));
+
     }
 
+    protected __startGame() {
+        app.debug(`游戏开始`)
+        this._loadingWindow.node.destroy();
+        this._loadingPrefeb.decRef();
+        this._loadingPrefeb = null;
+        this._loadingWindow = null;
+        this.startGame();
+    }
 
     protected update(dt: number): void {
         app.update(dt);
     }
 
-    abstract startGame();
-    abstract loading(progress: number, total: number);
+    protected abstract startGame();
 
-    protected loadLoding(): Promise<cc.Prefab> {
+
+    private loadLoding(): Promise<cc.Prefab> {
         const self = this;
         return new Promise((res, rej) => {
             cc.assetManager.loadBundle(self.loadingBundle, (err, bundle) => {
@@ -49,4 +57,5 @@ export default abstract class Entry extends cc.Component {
             })
         })
     }
+
 }

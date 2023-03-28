@@ -11,5 +11,13 @@ export default class LoadingWindow extends WindowUI {
     protected onHide() {
 
     }
-    
+
+    progress(progress: number, total: number) {
+        app.debug(`progress:${progress} total:${total}`)
+        const self = this;
+        self.scheduleOnce(() => {
+            self.node.emit("startGame");
+        }, 1)
+    }
+
 }
