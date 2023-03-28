@@ -1,13 +1,35 @@
+import Module from "./modules/Module";
+
 const { ccclass, property } = cc._decorator;
 
 declare global {
     namespace app {
+        /**
+         *  游戏是否运行
+         */
+        const isRunning: boolean;
+        /**
+         * 游戏运行总时间
+         */
+        const totalTime: number;
+
+        const sys: ISysModules;
+        const cus: ICusModules;
+    }
+
+    interface ISysModules {
+
+    }
+
+    interface ICusModules {
 
     }
 }
 @ccclass
 export default class Engine extends cc.Component {
+    protected onLoad(): void {
 
+    }
 }
 
 
@@ -15,7 +37,9 @@ export default class Engine extends cc.Component {
 class App {
     private _isRunning: boolean = false;
     private readonly _event: cc.EventTarget = new cc.EventTarget();
-    get running(): boolean {
+    readonly sys: { [key: string]: Module } = {};
+    readonly cus: { [key: string]: Module } = {};
+    get isRunning(): boolean {
         return this._isRunning;
     }
 
@@ -26,7 +50,7 @@ class App {
         });
     }
 
-    
+
     private _totalTime: number = 0;
 
     get totalTime(): number {
