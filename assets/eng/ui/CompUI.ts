@@ -2,27 +2,43 @@ const { ccclass, property } = cc._decorator;
 
 @ccclass
 export default class CompUI<T = undefined> extends cc.Component {
-    private _data: T;
+    private __data: T;
     protected data(): T {
-        return this._data;
+        return this.__data;
     }
 
     setData(v: T) {
-        this._data = v;
+        this.__data = v;
     }
 
 
     show(data?: T) {
-
+        if (this.node.active) {
+            if (this.__data != data) {
+                this.__data = data;
+                this.onShow(this.__data);
+            }
+        } else {
+            this.__data = data;
+            this.node.active = true;
+        }
     }
 
     hide() {
-
+        if (!this.node.active) return;
+        this.node.active = false;
     }
 
-    onShow?(data?: T);
+    protected onEnable(): void {
+        this.onShow(this.__data);
+    }
 
-    onHide?();
+    protected onDisable(): void {
+        this.onHide();
+    }
 
-    
+    protected onShow?(data?: T);
+
+    protected onHide?();
+
 }
