@@ -1,5 +1,5 @@
 
-import LoadingWindow from "../bundles/loading/LoadingWindow";
+import Loading from "./Loading";
 import { app } from "./Engine";
 
 const { ccclass, property } = cc._decorator;
@@ -14,49 +14,29 @@ export default abstract class Entry extends cc.Component {
     loadingPrefebPath: string = "loading"
 
 
-    private _loadingWindow: LoadingWindow = null;
+    private _loadingWindow: Loading = null;
     private _loadingPrefeb: cc.Prefab = null;
 
     protected async start() {
-        const loadingPrefeb = await this.loadLoding();
-        loadingPrefeb.addRef();
-        this._loadingPrefeb = loadingPrefeb;
-        const loadingNode = cc.instantiate(loadingPrefeb);
-        cc.find("Canvas").addChild(loadingNode);
-        this._loadingWindow = loadingNode.getComponent(LoadingWindow);
-        this._loadingWindow.node.once("startGame", this.__startGame, this);
-        await app.init();
+        const self = this;
+        const load = await self.loading().catch(err => err);
+        if (load instanceof Loading) {
+            load.node.once("startGame", this.startGame, self);
+            await app.init().catch(err => self.startGame(err));
+        }
     }
 
-    protected __startGame() {
-        app.debug(`游戏开始`)
-        this._loadingWindow.node.destroy();
-        this._loadingPrefeb.decRef();
-        this._loadingPrefeb = null;
-        this._loadingWindow = null;
-        this.startGame();
-    }
+
 
     protected update(dt: number): void {
         app.update(dt);
     }
 
-    protected abstract startGame();
+    protected abstract startGame(err: Error);
 
-
-    private loadLoding(): Promise<cc.Prefab> {
-        const self = this;
-        return new Promise((res, rej) => {
-            cc.assetManager.loadBundle(self.loadingBundle, (err, bundle) => {
-                if (!!err) return rej(err)
-                bundle.load<cc.Prefab>(self.loadingPrefebPath, (err, prefeb) => {
-                    if (!!err) return rej(err);
-                    res(prefeb);
-                })
-            })
-        })
-    }
+    protected abstract loading(): Promise<Loading>;
 
 }
+
 
 
