@@ -1,5 +1,5 @@
 
-import LoadingWindow from "../loading/LoadingWindow";
+import LoadingWindow from "../bundles/loading/LoadingWindow";
 import { app } from "./Engine";
 
 const { ccclass, property } = cc._decorator;
@@ -25,7 +25,7 @@ export default abstract class Entry extends cc.Component {
         cc.find("Canvas").addChild(loadingNode);
         this._loadingWindow = loadingNode.getComponent(LoadingWindow);
         this._loadingWindow.node.once("startGame", this.__startGame, this);
-        await app.init(this._loadingWindow.progress.bind(this._loadingWindow));
+        await app.init();
 
     }
 

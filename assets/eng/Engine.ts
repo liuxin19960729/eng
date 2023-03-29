@@ -79,15 +79,15 @@ class App {
         const cusInits = Object.values(self.cus).filter(v => v.onInit);
         const total = sysInits.length + cusInits.length;
         let progress = 0;
-        await Promise.all(sysInits.map(v => v.onInit().then(v => cb(++progress, total))));
-        await Promise.all(cusInits.map(v => v.onInit().then(v => cb(++progress, total))));
+        await Promise.all(sysInits.map(v => v.onInit().then(v => cb && cb(++progress, total))));
+        await Promise.all(cusInits.map(v => v.onInit().then(v => cb && cb(++progress, total))));
         Object.values(self.sys).forEach(val => !!val.onAfterInit && val.onAfterInit());
         Object.values(self.cus).forEach(val => !!val.onAfterInit && val.onAfterInit());
         return Promise.resolve();
     }
 
 
-  
+
 
     private _totalTime: number = 0;
 
