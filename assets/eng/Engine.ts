@@ -70,6 +70,8 @@ class App {
         return this._isRunning;
     }
 
+
+
     async init(cb?: (progress: number, total: number) => void): Promise<any> {
         const self = this;
         Object.values(self.sys).forEach(val => val["_event"] = self._event);
@@ -83,7 +85,12 @@ class App {
         await Promise.all(sysInits.map(v => v.onInit().then(v => cb && cb(++progress, total))));
         await Promise.all(cusInits.map(v => v.onInit().then(v => cb && cb(++progress, total))));
         Object.values(self.sys).forEach(val => !!val.onAfterInit && val.onAfterInit());
-        Object.values(self.cus).forEach(val => !!val.onAfterInit && val.onAfterInit());
+        // Object.values(self.cus).forEach(val => !!val.onAfterInit && val.onAfterInit());
+        // Object.values(self.sys).forEach(mod => {
+        //     if (!!mod.onUpdate) {
+        //         self.__sys_updates
+        //     }
+        // })
         return Promise.resolve();
     }
 
@@ -95,10 +102,17 @@ class App {
     get totalTime(): number {
         return this._totalTime;
     }
+    private __sys_updates: (Module)[] = [];
+    private __cus_updates: (Module)[] = [];
+    private __sys_after_updates: (Module)[] = [];
+    private __cus_after_updates: (Module)[] = [];
     update(dt: number) {
         if (!this._isRunning) return;
         this._totalTime += dt;
-
+        this.__sys_updates.forEach(mod => mod.onUpdate(dt, this._totalTime));
+        this.__cus_updates.forEach(mod => mod.onUpdate(dt, this._totalTime));
+        this.__sys_after_updates.forEach(mod => mod.onUpdate(dt, this._totalTime));
+        this.__cus_after_updates.forEach(mod => mod.onUpdate(dt, this._totalTime));
     }
 
 

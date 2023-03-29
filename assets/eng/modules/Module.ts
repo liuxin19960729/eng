@@ -24,4 +24,8 @@ export default class Module extends cc.Component {
     onBeforeInit?();
     onInit?(): Promise<any>;
     onAfterInit?();
+
+
+    onUpdate?(dt: number, totalTimes: number);
+    onAfterUpdate?(dt: number, totalTimes: number);
 }
