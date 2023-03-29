@@ -59,3 +59,5 @@ export default abstract class Entry extends cc.Component {
     }
 
 }
+
+

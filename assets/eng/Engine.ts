@@ -1,3 +1,4 @@
+
 import Module, { E_Module_Type } from "./modules/Module";
 
 const { ccclass, property } = cc._decorator;
