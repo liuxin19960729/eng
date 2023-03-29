@@ -26,7 +26,6 @@ export default abstract class Entry extends cc.Component {
         this._loadingWindow = loadingNode.getComponent(LoadingWindow);
         this._loadingWindow.node.once("startGame", this.__startGame, this);
         await app.init();
-
     }
 
     protected __startGame() {
